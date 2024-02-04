@@ -1,0 +1,12 @@
+add_library(glfw STATIC IMPORTED GLOBAL)
+set_target_properties(glfw PROPERTIES
+  IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/libs/glfw3.lib
+)
+
+list(APPEND EXTERNAL_LIBS
+  glfw
+)
+
+list(APPEND EXTERNAL_INCLUDES
+  ${CMAKE_CURRENT_LIST_DIR}/include
+)
