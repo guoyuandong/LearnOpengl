@@ -84,3 +84,7 @@ void Shader::use() const {
 void Shader::setFloat(const char* name, float value) const {
     glUniform1f(glGetUniformLocation(this->ID,name), value);
 }
+
+void Shader::setSampler(const char* name, unsigned int unit) const {
+    glUniform1i(glGetUniformLocation(this->ID,name), unit);
+}

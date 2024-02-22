@@ -60,9 +60,9 @@ int main() {
     }
 
     float vertices[] = {
-        -1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-        1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-        1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+        -1.0f, 1.0f, 0.0f, 0.0f, 2.0f,
+        1.0f, 1.0f, 0.0f, 2.0f, 2.0f,
+        1.0f, -1.0f, 0.0f, 2.0f, 0.0f,
         -1.0f, -1.0f, 0.0f, 0.0f, 0.0f
     };
 
@@ -100,14 +100,16 @@ int main() {
 
     Shader program("../../src/03_texture/resources/shader.vs", "../../src/03_texture/resources/shader.fs");
 
+    stbi_set_flip_vertically_on_load(true);
+
     int width, height, nrChannels;
     unsigned char* data = stbi_load("../../src/03_texture/resources/container.jpg", &width, &height, &nrChannels, 0);
 
-    unsigned int texture;
-    glGenTextures(1, &texture);
+    unsigned int texture0;
+    glGenTextures(1, &texture0);
 
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glBindTexture(GL_TEXTURE_2D, texture0);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
@@ -119,6 +121,30 @@ int main() {
 
     stbi_image_free(data);
 
+    data = stbi_load("../../src/03_texture/resources/awesomeface.png", &width, &height, &nrChannels, 0);
+
+    unsigned int texture1;
+    glGenTextures(1, &texture1);
+
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+
+    program.use();
+    program.setSampler("ourTexture0", 0);
+    program.setSampler("ourTexture1", 1);
+
+    glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
     while (!glfwWindowShouldClose(window))
     {
         processInput(window);
